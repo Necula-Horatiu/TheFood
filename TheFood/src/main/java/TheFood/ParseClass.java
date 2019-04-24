@@ -24,10 +24,10 @@ public class ParseClass {
                     }
                     if (ok == 2) {
                         if (aa.charAt(0) == '1') {
-                            obj.setProbability("0");
+                            obj.setProbability(0.0);
                         } else if (aa.charAt(0) == '0') {
                             String upToNCharacters = aa.substring(0, 4);
-                            obj.setProbability(upToNCharacters);
+                            obj.setProbability(Double.parseDouble(upToNCharacters));
                         }
                         ok = 10;
                     }

@@ -2,6 +2,7 @@ package TheFood.Controllers;
 
 import TheFood.Models.PredictionModel;
 import TheFood.ParseClass;
+import TheFood.Services.FoodService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -25,8 +26,11 @@ public class RequestController {
 
     private static ParseClass parseClass;
 
-    public RequestController(ParseClass parseClass) {
+    private static FoodService foodService;
+
+    public RequestController(ParseClass parseClass, FoodService foodService) {
         this.parseClass = parseClass;
+        this.foodService = foodService;
     }
 
     @PostMapping
@@ -62,6 +66,14 @@ public class RequestController {
                     content.append(System.lineSeparator());
                 }
             }
+            ArrayList<PredictionModel> predictions = parseClass.getPredictions(content.toString());
+            PredictionModel obj = new PredictionModel("", 0.0);
+            for (int i = 0; i < predictions.size(); i++) {
+                if (obj.getProbability() < predictions.get(i).getProbability()) {
+                    obj = predictions.get(i);
+                }
+            }
+            System.out.println(foodService.getFoodByName(obj.getTagName()).getIngredients());
             return parseClass.getPredictions(content.toString());
         } finally {
             connection.disconnect();
